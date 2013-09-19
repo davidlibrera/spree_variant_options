@@ -42,24 +42,25 @@ li.clear-option a.clear-button:hover {
   background-color: #EF2E2E;
   color: #fff;
 }
-.option-value.selected,
-.option-value.in-stock:hover {
-  background-color: #1491EB;
-  border-color: #1072B9;
-  color: #fff;
-}
-.option-value.out-of-stock {
-  display: block;
-  background: transparent url(<%= asset_path "store/out-of-stock.png" %>) 0 0 repeat;
-  color: #aaa;
-  cursor: default;
-}
-.option-value.locked,
-.option-value.locked:hover {
-  background-color: #fff;  
-  border-color: #f0f0f0;
-  color: #ddd;
-  cursor: default;
+.option-value a {
+    &.selected, &.in-stock:hover, &:hover {
+        background-color: #1491EB;
+        border-color: #1072B9;
+        color: #fff;
+    }
+    &.out-of-stock {
+        display: block;
+        background: transparent url(<%= asset_path "store/out-of-stock.png" %>) 0 0 repeat;
+        color: #aaa;
+        cursor: default;
+        pointer-events: none;
+    }
+    &.locked, &.locked:hover {
+        background-color: #fff;  
+        border-color: #f0f0f0;
+        color: #ddd;
+        cursor: default;
+    }
 }
 .option-value.locked img {
   filter:alpha(opacity=50);

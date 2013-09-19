@@ -1,3 +1,5 @@
+alert('suca')
+
 $.extend({
   keys: function(obj){
     var a = [];
