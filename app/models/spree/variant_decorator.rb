@@ -12,4 +12,8 @@ Spree::Variant.class_eval do
     }
   end
 
+  def has_option_value?(option_value_id)
+    self.option_values.map(&:id).include? option_value_id
+  end
+
 end
