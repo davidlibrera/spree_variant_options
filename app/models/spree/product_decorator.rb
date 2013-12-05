@@ -15,17 +15,15 @@ Spree::Product.class_eval do
 
   def variant_options_hash
     return @_variant_options_hash if @_variant_options_hash
-    hash = {}
+    array = []
     variants.includes(:option_values).each do |variant|
+      hash = {variant_id: variant.id, count: variant.total_on_hand, price: variant.price}
       variant.option_values.each do |ov|
-        otid = ov.option_type_id.to_s
-        ovid = ov.id.to_s
-        hash[otid] ||= {}
-        hash[otid][ovid] ||= {}
-        hash[otid][ovid][variant.id.to_s] = variant.to_hash
+        hash[ov.option_type.id] = ov.id
       end
+      array.push hash
     end
-    @_variant_options_hash = hash
+    @_variant_options_hash = array
   end
 
 end
