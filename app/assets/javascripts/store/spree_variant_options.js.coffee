@@ -57,25 +57,46 @@ class VariantOptions
       @_selected[type_id] = value_id
       if @isAvailable selected
         $(el).removeClass 'locked'
+        if @isOutOfStock selected
+          $(el).addClass 'out-of-stock'
       else
         $(el).addClass 'locked'
       @_selected[type_id] = old_value
 
-  isAvailable: (selected) ->
+  availableProducts: (selected) ->
     keys = $.grep $.keys(selected), (item) -> selected[item] != 0
     available_products = $.grep @_data, (item) ->
       available = true
       available = available && item[key] == selected[key] for key in keys
       available
-    available_products.length > 0
+
+
+  isAvailable: (selected) ->
+    @availableProducts(selected).length > 0
+
+  isOutOfStock: (selected) ->
+    @availableProducts(selected)[0]["count"] <= 0
+
 
   isCompleted: ->
-    missing_selection = $.grep @_opt_ids, (item) =>
-      @_selected[item] == 0
-    missing_selection.length == 0
+    selection = $.grep @_opt_ids, (item) =>
+      @_selected[item] != 0
+    selection.length == @_opt_ids.length and not @isOutOfStock @_selected
 
   resetSelected: ->
     @_selected[type_id] = 0 for type_id in @_opt_ids
+
+  setAddToCart: ->
+    $button = $('#add-to-cart-button')
+    if @isCompleted()
+      $button.removeClass('disabled')
+      $button.html "Aggiungi al carrello"
+    else
+      $button.addClass('disabled')
+      if @isOutOfStock @_selected
+        $button.html "Fuori Magazzino"
+      else
+        $button.html "Aggiungi al carrello"
 
 $ ->
   $('[data-variant-options]').each ->
@@ -98,12 +119,6 @@ $ ->
           else
             variants.select type_id, value_id
         variants.lockRows type_id
-        if variants.isCompleted()
-          $('#add-to-cart-button').removeClass('disabled')
-        else
-          $('#add-to-cart-button').addClass('disabled')
+        variants.setAddToCart()
 
-    if variants.isCompleted()
-      $('#add-to-cart-button').removeClass('disabled')
-    else
-      $('#add-to-cart-button').addClass('disabled')
+    variants.setAddToCart()
