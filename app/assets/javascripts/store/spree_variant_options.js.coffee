@@ -80,13 +80,14 @@ class VariantOptions
 $ ->
   $('[data-variant-options]').each ->
     variants = new VariantOptions($(@).data('variant-options'))
-    if variants.isCompleted()
-      $('#add-to-cart-button').removeClass('disabled')
-    else
-      $('#add-to-cart-button').addClass('disabled')
     $('[data-variant-option-value]').each ->
       type_id = $(@).data('variant-option-type')
       value_id = $(@).data('variant-option-value')
+
+      if $(@).hasClass 'selected'
+        variants.select type_id, value_id
+        variants.lockRows type_id
+
       $(@).click ->
         if variants.isLocked type_id, value_id
           variants.cleanRows()
@@ -101,3 +102,8 @@ $ ->
           $('#add-to-cart-button').removeClass('disabled')
         else
           $('#add-to-cart-button').addClass('disabled')
+
+    if variants.isCompleted()
+      $('#add-to-cart-button').removeClass('disabled')
+    else
+      $('#add-to-cart-button').addClass('disabled')
