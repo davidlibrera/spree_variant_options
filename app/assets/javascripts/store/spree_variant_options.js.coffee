@@ -59,6 +59,8 @@ class VariantOptions
         $(el).removeClass 'locked'
         if @isOutOfStock selected
           $(el).addClass 'out-of-stock'
+        else
+          $(el).removeClass 'out-of-stock'
       else
         $(el).addClass 'locked'
       @_selected[type_id] = old_value
@@ -98,18 +100,35 @@ class VariantOptions
       else
         $button.html "Aggiungi al carrello"
 
+
+  retrieveImages: ->
+    images = $('#product-thumbnails li.vtmb')
+    keys = $.grep $.keys(@_selected), (item) => @_selected[item] != 0
+    main_image =
+    images.each (i, el) =>
+      $(el).hide()
+      data = $(el).data 'variant'
+      display = if (keys.length > 0) then true else false
+      display = display && (data[key] == @_selected[key]) for key in keys
+      href = $(el).find('a').first().attr('href')
+      if display
+        $(el).show()
+        $('#main-image img').attr('src', href)
+      $(el).show() if display
+
 $ ->
   $('[data-variant-options]').each ->
     variants = new VariantOptions($(@).data('variant-options'))
-    $('[data-variant-option-value]').each ->
-      type_id = $(@).data('variant-option-type')
-      value_id = $(@).data('variant-option-value')
+    $('#product-thumbnails li.vtmb').each (i, el) -> $(el).hide()
 
-      if $(@).hasClass 'selected'
+    $('[data-variant-option-value]').each (i, el) ->
+      type_id = $(el).data('variant-option-type')
+      value_id = $(el).data('variant-option-value')
+      if $(el).hasClass 'selected'
         variants.select type_id, value_id
         variants.lockRows type_id
 
-      $(@).click ->
+      $(el).click ->
         if variants.isLocked type_id, value_id
           variants.cleanRows()
           variants.select type_id, value_id
@@ -119,6 +138,7 @@ $ ->
           else
             variants.select type_id, value_id
         variants.lockRows type_id
+        variants.retrieveImages()
         variants.setAddToCart()
 
     variants.setAddToCart()

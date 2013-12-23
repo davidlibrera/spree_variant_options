@@ -16,4 +16,12 @@ Spree::Variant.class_eval do
     self.option_values.map(&:id).include? option_value_id
   end
 
+  def options_json
+    values = self.option_values.joins(:option_type).order("#{Spree::OptionType.table_name}.position asc")
+    opts = {}
+    values.map! do |ov|
+      opts[ov.option_type_id] = ov.id
+    end
+    opts.to_json
+  end
 end
