@@ -2,8 +2,6 @@ Spree::Variant.class_eval do
 
   include ActionView::Helpers::NumberHelper
 
-  attr_accessible :option_values
-
   def to_hash
     {
       :id    => self.id,
@@ -19,7 +17,7 @@ Spree::Variant.class_eval do
   def options_json
     values = self.option_values.joins(:option_type).order("#{Spree::OptionType.table_name}.position asc")
     opts = {}
-    values.map! do |ov|
+    values.each do |ov|
       opts[ov.option_type_id] = ov.id
     end
     opts.to_json

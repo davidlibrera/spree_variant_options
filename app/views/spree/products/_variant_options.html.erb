@@ -3,32 +3,16 @@
     <h2><%= t('variants') %></h2>
     <% @product.grouped_option_values.each do |type, values| %>
       <div id="<%= dom_id(type) %>" class="variant-options">
-        <h6 class="variant-option-type"><%= type.presentation %></h6>
-        <ul class="variant-option-values">
+        <select data-variant-option-type="<%= type.id %>">
+          <option>Choose a <%= type.presentation %></option>
           <% values.sort_by(&:position).each do |value| %>
             <% unless (variants = @product.variants_for_option_value(value)).empty? %>
-              <li class="option-value"><%= link_to content_tag(:span, value.presentation), "#", :title => value.presentation, :data => {:variant_option_value => value.id, :variant_option_type => type.id} %></li>
+              <option data-variant-option-value="<%= value.id %>" value="<%= value.presentation %>"><%= value.presentation %></option>
             <% end %>
           <% end %>
-          <li class="clear-option"><%= link_to "X", "#clear", :class => "clear-button", :data => {:clear => true, :variant_option_type => type.id} %></li>
-          <li class="clear"></li>
-        </ul>
+        </select>
       </div>
     <% end %>
-    <%= hidden_field_tag "products[#{@product.id}]", "", :id => "variant_id", :class => "hidden" %>
-
-
-
-    <script type="text/javascript">
-    //<![CDATA[
-      // var variant_options = new VariantOptions({
-      //   options: <%== @product.variant_options_hash.to_json -%>,
-      //   track_inventory_levels: <%==  !!Spree::Config[:track_inventory_levels] -%>,
-      //   allow_backorders: <%==  !!Spree::Config[:allow_backorder_shipping] -%>,
-      //   allow_select_outofstock: <%== !!SpreeVariantOptions::VariantConfig[:allow_select_outofstock] -%>,
-      //   default_instock: <%== !!SpreeVariantOptions::VariantConfig[:default_instock] -%>
-      // });
-    //]]>
-    </script>
+    <%= hidden_field_tag "variant_id", "", :id => "variant_id", :class => "hidden" %>
   </div>
 <% end%>
