@@ -1,0 +1,6 @@
+//= require spree/frontend
+//= require_tree .
+
+.chosen-container {
+    min-width: 300px;
+}
