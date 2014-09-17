@@ -1,5 +1,3 @@
-#= require_tree .
-
 $.extend
   keys: (obj) ->
     a = []
@@ -87,7 +85,6 @@ class VariantOptions
             $(opt_val).html "#{value} (not available)"
           else
             $(opt_val).html value
-          $(opt_val).trigger("chosen:updated")
 
   retrieveImages: ->
     images = $('#product-thumbnails li.vtmb')
@@ -112,7 +109,6 @@ $ ->
   $('[data-variant-options]').each ->
     variants = new VariantOptions($(@).data('variant-options'))
     $('[data-variant-option-type]').each (i, el) ->
-      $(el).chosen()
       type_id = $(el).data('variant-option-type')
       $(el).change ->
         $selected_option = $(this).find('option:selected')
@@ -128,6 +124,5 @@ $ ->
         variants.updateOptions(type_id)
         variants.retrieveImages()
         variants.setAddToCart()
-        $(@).trigger("chosen:updated")
 
     variants.setAddToCart()
